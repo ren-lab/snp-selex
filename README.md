@@ -1,6 +1,6 @@
 # SNP-SELEX
 
-This repo is designed to store key scripts used in the analysis of SNP-SELEX data.
+This repo is designed to store key scripts used in the analysis of SNP-SELEX data. The codes were written by [André M. Ribeiro dos Santos](andremrsantos@gmail.com) and [Yunjiang Qiu](serein927@gmail.com). 
 
 ## PWM score calculation
 
