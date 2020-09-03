@@ -1,0 +1,286 @@
+shell.prefix("set -o pipefail; ")
+shell.prefix("set -e; ")
+shell.prefix("set -u; ")
+
+configfile: "config.json"
+localrules: deltasvm_meta
+
+def CYCLE0(wildcards):
+    tmp = wildcards.id.split("_")
+    return "selex_seqs/ZeroCycle_{0}_0_0.flt.fa".format(tmp[4].replace(".fastq.gz", ""))
+
+models = "ALX3_FL_4_KV_TAGCTG40NCTA.subsample_20000.10mer GCM2_FL_4_KAF_TGTTTC40NTTA.subsample_20000.8mer HOXA6_eDBD_4_KP_TCGTCA40NCTA.subsample_20000.8mer CREB3L4_eDBD_4_KO_TATTTC40NGCA.subsample_20000.8mer ELF3_eDBD_2_KP_TACATC40NATA.subsample_20000.10mer DMRTA1_FL_3_KZ_TCAGGG40NGCA.subsample_20000.10mer GLI3_eDBD_4_KP_TCAAAC40NAAC.subsample_20000.8mer LHX6_FL_3_KAE_TGTCAA40NCGA.subsample_20000.8mer ZNF140_eDBD_1_KS_TGAGGT40NTCC.subsample_20000.8mer POU3F2_eDBD_4_KP_TGGAGA40NCCA.subsample_20000.10mer DLX4_FL_2_KV_TCGTGG40NTCT.subsample_20000.8mer MAF_FL_4_KV_TGAATT40NTAA.subsample_20000.10mer LHX9_FL_4_KW_TTTGGT40NCTT.subsample_20000.8mer NFKB2_eDBD_2_KS_TCCGGG40NCTC.subsample_20000.10mer HSF4_eDBD_3_KP_TCAAGA40NCGC.subsample_20000.10mer ATF2_FL_4_KZ_TGAGGA40NTTG.subsample_20000.10mer YY1_FL_4_KX_TTGGGC40NGGC.subsample_20000.8mer ETV7_FL_4_KAE_TCTCTG40NGAA.subsample_20000.10mer VSX2_eDBD_3_KO_TTTGTT40NTAT.subsample_20000.8mer TFAP2B_eDBD_4_KP_TGAGTT40NCGG.subsample_20000.10mer FLI1_eDBD_3_KAN_TAAACG40NGCC.subsample_20000.8mer GATA3_FL_3_KX_TTCGTT40NGCC.subsample_20000.8mer CEBPB_eDBD_3_KN_TCATTC40NATT.subsample_20000.10mer DLX5_FL_4_KX_TACGGT40NTAC.subsample_20000.8mer ETV1_eDBD_3_KAN_TGACCC40NGAA.subsample_20000.8mer T_eDBD_4_KS_TGCCTC40NCAA.subsample_20000.10mer DLX1_FL_3_KAE_TCCATG40NCAC.subsample_20000.10mer NRL_FL_4_KV_TAAGGG40NACC.subsample_20000.10mer NFE2_eDBD_3_KR_TTAAAT40NAAT.subsample_20000.10mer SPIB_FL_3_KV_TTTAGC40NGAC.subsample_20000.10mer NFIC_FL_3_KX_TATTTG40NCCA.subsample_20000.10mer ETV5_eDBD_4_KP_TACATA40NAGA.subsample_20000.10mer SNAI3_FL_3_KAE_TAGTAC40NTAG.subsample_20000.8mer CREB5_FL_4_KAE_TTACAA40NTAC.subsample_20000.10mer TBX20_FL_4_KAE_TAAGAA40NATA.subsample_20000.10mer ZNF32_FL_1_KAE_TAGGTC40NACG.subsample_20000.10mer FIGLA_eDBD_3_KN_TCGGGA40NGCA.subsample_20000.8mer MEIS2_eDBD_2_KT_TTGGCC40NTCG.subsample_20000.10mer PAX7_eDBD_3_KP_TGTCAG40NGAC.subsample_20000.8mer ZNF524_FL_4_KX_TTGATG40NATC.subsample_20000.8mer ATF3_eDBD_2_KS_TGCAGT40NAAG.subsample_20000.10mer MBNL2_FL_4_KZ_TCTAAG40NTTA.subsample_20000.8mer UBP1_eDBD_2_KT_TGGCCT40NTAT.subsample_20000.10mer HOXC9_FL_2_KV_TATGTA40NTGT.subsample_20000.10mer FOXA2_eDBD_3_KT_TAGCTG40NCTA.subsample_20000.10mer CUX1_eDBD_4_KP_TTAGCG40NAGA.subsample_20000.8mer MEIS3_eDBD_4_KQ_TCTAGT40NAAC.subsample_20000.10mer KLF13_FL_3_KV_TATATA40NGCT.subsample_20000.10mer CDX1_eDBD_3_KP_TCTAAG40NTTA.subsample_20000.8mer HOXA10_eDBD_3_KR_TGTCGA40NGCA.subsample_20000.8mer ISX_FL_3_KW_TTCAAG40NGCC.subsample_20000.8mer ZNF75A_eDBD_4_KP_TCTTAT40NACA.subsample_20000.8mer HOXC10_FL_4_KX_TTGGCC40NTCG.subsample_20000.10mer NR2F1_FL_4_KW_TAGAGC40NTAG.subsample_20000.8mer FERD3L_FL_4_KW_TAAATT40NCTG.subsample_20000.10mer SCRT1_eDBD_3_KP_TTCGGC40NAGC.subsample_20000.10mer HESX1_FL_3_KW_TCGCTA40NTCG.subsample_20000.8mer CLOCK_eDBD_4_KN_TTGAAT40NTAC.subsample_20000.10mer EMX1_eDBD_3_KO_TTAGCA40NGGT.subsample_20000.8mer EGR3_FL_4_KW_TCCATC40NTGA.subsample_20000.8mer ESX1_eDBD_4_KAN_TTGTTC40NAAG.subsample_20000.10mer HLF_FL_1_KX_TGGAGT40NTGG.subsample_20000.10mer VAX2_FL_4_KX_TGTCGA40NGCA.subsample_20000.10mer SOX7_eDBD_3_KR_TCTGGG40NCTG.subsample_20000.8mer FOXB1_eDBD_3_KO_TGCCAA40NTAG.subsample_20000.8mer NR5A1_FL_4_KW_TACCAA40NTTA.subsample_20000.8mer NFATC3_eDBD_3_KT_TAGATG40NTAT.subsample_20000.10mer TFCP2_eDBD_2_KT_TTAGTA40NCTC.subsample_20000.10mer MAFG_FL_4_KAE_TGTTAA40NACT.subsample_20000.10mer OLIG2_eDBD_4_KR_TACTAG40NGGA.subsample_20000.8mer ZNF580_FL_3_KAE_TGGCCA40NTTC.subsample_20000.8mer RFX2_eDBD_3_KP_TTCGCC40NGAC.subsample_20000.10mer GRHL1_eDBD_4_KS_TGCTCC40NCCG.subsample_20000.10mer HSF1_FL_4_KX_TTTATT40NATC.subsample_20000.10mer GCM1_eDBD_3_KP_TTCGTC40NCGT.subsample_20000.8mer ZIC1_FL_4_KW_TTTATT40NATC.subsample_20000.10mer BHLHA15_eDBD_4_KP_TCCCGC40NACA.subsample_20000.8mer NHLH1_eDBD_4_KR_TGCAGT40NAAG.subsample_20000.10mer JDP2_eDBD_2_KT_TATTTC40NGCA.subsample_20000.8mer LHX8_FL_3_KW_TAGCTG40NCTA.subsample_20000.8mer SPDEF_eDBD_4_KW_TAGAGA40NCGC.subsample_20000.10mer SKOR2_eDBD_4_KP_TGGCGT40NCCT.subsample_20000.8mer OLIG3_FL_4_KX_TTCGTC40NCGT.subsample_20000.10mer IRF3_eDBD_4_KS_TACTGA40NACC.subsample_20000.10mer PROP1_eDBD_2_KAN_TCCAAG40NAAC.subsample_20000.10mer SNAI1_eDBD_4_KT_TAGCGC40NCGC.subsample_20000.8mer POU4F3_FL_3_KZ_TACCCA40NTGT.subsample_20000.10mer HSF2_FL_2_KZ_TCAAAC40NAAC.subsample_20000.10mer MYBL2_eDBD_2_KR_TTAGAG40NCGG.subsample_20000.8mer HOXC4_FL_3_KV_TTCGGG40NGAG.subsample_20000.10mer PHOX2B_FL_2_KV_TCACAT40NATG.subsample_20000.10mer RFX3_eDBD_4_KS_TCCACC40NTTA.subsample_20000.10mer ERG_eDBD_3_KT_TAGAGC40NTAG.subsample_20000.10mer DUXA_eDBD_3_KP_TGTGAT40NGCA.subsample_20000.10mer HOXB13_eDBD_4_KN_TCACTT40NTTG.subsample_20000.10mer HOXC11_eDBD_4_KR_TCTGCA40NATA.subsample_20000.8mer OTX1_FL_3_KX_TGGACT40NAAT.subsample_20000.10mer HOXA13_eDBD_4_KP_TACTGA40NACC.subsample_20000.10mer JUND_eDBD_1_KS_TACCCA40NTGT.subsample_20000.10mer OVOL1_FL_2_KX_TGCTGG40NGCC.subsample_20000.8mer DBP_FL_2_KW_TGGCGT40NCCT.subsample_20000.10mer TGIF2LX_FL_4_KW_TCGCCC40NCAT.subsample_20000.8mer IRF8_FL_4_KW_TAAAGT40NAGC.subsample_20000.10mer TFE3_eDBD_4_KS_TGGTTA40NTAC.subsample_20000.10mer ZBTB26_FL_4_KAE_TGAAGG40NGAT.subsample_20000.8mer YY2_FL_3_KV_TAGAGA40NCGC.subsample_20000.8mer ETV4_eDBD_1_KS_TTCTCA40NCCT.subsample_20000.8mer SNAI2_FL_4_KV_TACCTT40NCGA.subsample_20000.10mer ETV2_eDBD_4_KO_TTCGGG40NGAG.subsample_20000.10mer JUN_FL_4_KAE_TCAGTG40NGAT.subsample_20000.8mer ELF2_eDBD_3_KR_TTAGCT40NCCT.subsample_20000.8mer PAX8_FL_3_KX_TCTTGT40NCAG.subsample_20000.10mer NHLH2_FL_2_KW_TTAGTA40NCTC.subsample_20000.10mer ALX1_FL_4_KX_TACCAA40NTTA.subsample_20000.10mer TBX3_eDBD_4_KT_TGCCAA40NTAG.subsample_20000.8mer NFATC1_eDBD_3_KS_TTCAAG40NGCC.subsample_20000.10mer ELK3_eDBD_3_KAN_TTGAAC40NGCT.subsample_20000.10mer HOXD13_eDBD_3_KP_TCGAAT40NAGG.subsample_20000.10mer TFAP2E_FL_4_KW_TCAAAC40NAAC.subsample_20000.10mer E2F4_eDBD_3_KO_TCAGGG40NGCA.subsample_20000.10mer ZNF396_FL_3_KW_TTAAAT40NAAT.subsample_20000.8mer ATOH1_eDBD_4_KO_TCAGCA40NCTC.subsample_20000.8mer ZNF740_FL_3_KW_TTATTT40NCGT.subsample_20000.8mer ESRRG_eDBD_4_KS_TACCTT40NCGA.subsample_20000.10mer TFAP2A_FL_3_KX_TCGTCA40NCTA.subsample_20000.10mer ATF6B_eDBD_4_KP_TTCTGT40NAAC.subsample_20000.10mer MSC_FL_4_KV_TACTTA40NCTA.subsample_20000.8mer BHLHE23_FL_3_KV_TTGCTC40NGAA.subsample_20000.8mer NFIX_FL_3_KAE_TTGAGC40NGTC.subsample_20000.10mer MEF2B_FL_4_KW_TTAGCA40NGGT.subsample_20000.10mer VENTX_FL_4_KW_TATTTG40NCCA.subsample_20000.10mer GATA5_eDBD_2_KP_TCCTCG40NCAG.subsample_20000.8mer FEV_eDBD_3_KO_TGCGCA40NCAA.subsample_20000.8mer ZNF597_FL_3_KW_TATTCA40NAGT.subsample_20000.8mer RAX_eDBD_1_KO_TTGCTC40NGAA.subsample_20000.8mer CEBPE_eDBD_3_KR_TGTAGA40NTGT.subsample_20000.10mer HOXD10_eDBD_4_KT_TAAGTC40NCGT.subsample_20000.10mer ELF1_eDBD_2_KR_TGAACC40NCCA.subsample_20000.8mer YBX1_eDBD_4_KR_TTGCTC40NGAA.subsample_20000.10mer GBX2_FL_2_KV_TGGTGG40NTAA.subsample_20000.8mer EGR1_eDBD_2_KR_TTGTAC40NGTA.subsample_20000.8mer MYOD1_eDBD_3_KO_TGTCTG40NAGG.subsample_20000.8mer NEUROG1_FL_3_KAE_TTGCCA40NGTG.subsample_20000.8mer RFX1_eDBD_3_KS_TTTAGG40NTCT.subsample_20000.10mer FOXA1_FL_4_KX_TAGCGT40NTCA.subsample_20000.8mer IRF9_FL_4_KV_TTCAGG40NTGC.subsample_20000.10mer ELF5_eDBD_3_KAN_TCATTC40NATT.subsample_20000.8mer VSX1_eDBD_2_KO_TATATG40NCTA.subsample_20000.8mer ELK1_eDBD_1_KS_TGCCGA40NGTA.subsample_20000.8mer PKNOX1_eDBD_4_KR_TAGACC40NAGT.subsample_20000.8mer KLF12_FL_3_KX_TTTGAG40NATT.subsample_20000.8mer EN2_eDBD_2_KS_TGGCCT40NTAT.subsample_20000.8mer IRF7_eDBD_4_KT_TACTGG40NGGA.subsample_20000.8mer MIXL1_FL_1_KW_TTAAGT40NCCT.subsample_20000.10mer LMX1B_eDBD_3_KO_TTGGCC40NTCG.subsample_20000.10mer FOXR2_FL_4_KX_TTAGAG40NCGG.subsample_20000.8mer ZNF784_FL_4_KV_TACCAA40NTTA.subsample_20000.8mer MYOG_FL_4_KV_TACTAA40NATT.subsample_20000.10mer POU5F1_FL_2_KAE_TGCAGG40NTCG.subsample_20000.10mer CREB1_FL_4_KX_TCCCGC40NACA.subsample_20000.8mer".split()
+
+rule curve:
+    input:
+        expand("pbs_test/{id}.roc.tsv", id = ["ATF2_FL_4_KZ_TGAGGA40NTTG.subsample_20000.10mer", "MAFG_FL_4_KAE_TGTTAA40NACT.subsample_20000.10mer", "HLF_FL_1_KX_TGGAGT40NTGG.subsample_20000.10mer"])
+        
+rule auc:
+    input:
+        expand("pbs_test/{id}.subsample_{num}.{kmer}mer.auc.tsv", id=config["exps"], num=["20000"], kmer=["8", "10"])
+
+rule scores:
+    input:
+        expand("deltasvm/{id}.subsample_{num}.{kmer}mer.scores.tsv", id=config["exps"], num=["20000"], kmer=["8", "10"])
+
+rule predict:
+    input:
+        expand("gkmpredict/{id}.subsample_{num}.{kmer}mer.weights.txt", id=config["exps"], num=["20000"], kmer=["8", "10"])
+
+rule models:
+    input:
+        expand("models/{id}.subsample_{num}.{kmer}mer.model.txt", id=config["exps"], num=["20000"], kmer=["8", "10"])
+
+rule pred:
+    input:
+        expand("gkmpredict_seqs/{id}.subsample_{num}.{kmer}mer.pred.merged.tsv", id=config["exps"], num=["20000"], kmer=["8", "10"])
+
+rule pred_best:
+    input:
+        expand("gkmpredict_seqs/{id}.pred.merged.tsv", id=models, num=["20000"], kmer=["8", "10"])
+
+rule threshold:
+    input:
+        expand("pbs_threshold/{id}.subsample_{num}.{kmer}mer.threshold.pbsnp_{frac}.tsv", id=config["exps"], num=["20000"], kmer=["8", "10"], frac=["25", "50"])
+
+rule threshold_best:
+    input:
+        expand("pbs_threshold/{id}.threshold.pbsnp_{frac}.tsv", id=models, num=["20000"], frac=["25", "50", "75"])
+
+rule fastas:
+    input:
+        expand("selex_seqs/{id}.flt.subsample_{num}.fa", id=config["exps"], num=["20000"]),
+        expand("random_seqs/{id}.neg.flt.subsample_{num}.fa", id=config["exps"], num=["20000"])
+
+#Rules
+rule fastqTofasta:
+    input:
+        "fastq/{id}.fastq.gz"
+    output:
+        "selex_seqs/{id}.flt.fa"
+    params:
+        jobname = "{id}.fastqTofasta"
+    shell:
+        """
+        zcat {input} | awk '{{if(NR%4==1) {{printf(">%s\\n",substr($0,2));}} else if(NR%4==2) print;}}' > {output}
+        """
+
+rule complement_fasta:
+    input:
+        seq = "selex_seqs/{id}.flt.fa",
+        fa = CYCLE0
+    output:
+        "random_seqs/{id}.neg.flt.fa"
+    params:
+        comp = config["script"]["comp"],
+        jobname = "{id}.complement"
+    shell:
+        """
+        python {params.comp} -f {input.fa} -s {input.seq} -o {output}
+        """
+
+rule subsample_fasta:
+    input:
+        "{seq}/{id}.flt.fa"
+    output:
+        "{seq}/{id}.flt.subsample_{num}.fa"
+    params:
+        subsample = config["software"]["subsample"],
+        jobname = "{id}.subsample_{num}"
+    shell:
+        """
+        if [ $(cat {input} | wc -l) -lt 20000 ]; then
+            ln -s {input} {output}
+        else
+            {params.subsample} {input} {wildcards.num} > {output}
+        fi
+        """
+
+rule gkmtrain:
+    input:
+        pos = "selex_seqs/{id}.flt.subsample_{num}.fa",
+        neg = "random_seqs/{id}.neg.flt.subsample_{num}.fa"
+    output:
+        "models/{id}.subsample_{num}.{kmer}mer.model.txt"
+    params:
+        gkmtrain = config["software"]["gkmtrain"],
+        params = lambda wildcards: config["gkm"]["params"][wildcards.kmer],
+        jobname = "{id}.gkmtrain.subsample_{num}.{kmer}mer"
+    threads: 8
+    benchmark: "benchmark/{id}.subsample_{num}.{kmer}mer.gkmtrain.json"
+    log:
+        "log/{id}.subsample_{num}.{kmer}mer.gkmtrain_model.log"
+    shell:
+        """
+        {params.gkmtrain} -T 8 -m 20000 -t 2 {params.params} {input.pos} {input.neg} models/{wildcards.id}.subsample_{wildcards.num}.{wildcards.kmer}mer &> {log}
+        """
+
+rule gkmpredict:
+    input:
+        model = "models/{id}.subsample_{num}.{kmer}mer.model.txt",
+        fasta = "10mer.fa"
+    output:
+        "gkmpredict/{id}.subsample_{num}.{kmer}mer.weights.txt"
+    params:
+        gkmpredict = config["software"]["gkmpredict"],
+        jobname = "{id}.gkmpredict.subsample_{num}.{kmer}mer"
+    threads: 2
+    log:
+        "log/{id}.subsample_{num}.{kmer}mer.gkmpredict.log"
+    benchmark: "benchmark/{id}.subsample_{num}.{kmer}mer.gkmpredict.json"
+    shell:
+        """
+        {params.gkmpredict} -T 2 {input.fasta} {input.model} {output} &> {log}
+        """
+
+rule gkmpredict_seqs:
+    input:
+        model = "models/{id}.subsample_{num}.{kmer}mer.model.txt",
+        fasta = "data/selex_allelic_oligos.{allele}.fa"
+    output:
+        "gkmpredict_seqs/{id}.subsample_{num}.{kmer}mer.{allele}.pred.tsv"
+    params:
+        gkmpredict = config["software"]["gkmpredict"],
+        jobname = "{id}.gkmpredict_seqs.subsample_{num}.{kmer}mer.{allele}"
+    threads: 2
+    log:
+        "log/{id}.subsample_{num}.{kmer}mer.{allele}.gkmpredict_seqs.log"
+    benchmark: "benchmark/{id}.subsample_{num}.{kmer}mer.gkmpredict_seqs.{allele}.json"
+    shell:
+        """
+        {params.gkmpredict} -T 2 {input.fasta} {input.model} {output} &> {log}
+        """
+
+rule gkmpredict_merge:
+    input:
+        expand("gkmpredict_seqs/{{id}}.subsample_{{num}}.{{kmer}}mer.{allele}.pred.tsv", allele=["ref", "alt"])
+    output:
+        out = "gkmpredict_seqs/{id}.subsample_{num}.{kmer}mer.pred.merged.tsv"
+    run:
+        with open(output.out, "w") as fo:
+            fo.write("snp\tscore\tallele\texp\tnum\tkmer\n")
+            for i in input:
+                id = i.split('/')[-1].split(".")[0]
+                num = i.split('/')[-1].split(".")[1].split("_")[1]
+                kmer = i.split('/')[-1].split(".")[2]
+                allele = i.split('/')[-1].split(".")[3]
+                with open(i) as f:
+                    next(f)
+                    for line in f:
+                        tmp = line.rstrip().split("\t")
+                        fo.write("{0}\t{1}\t{2}\t{3}\t{4}\n".format(line.rstrip(), allele, id, num, kmer))
+
+rule deltasvm:
+    input:
+        ref = "data/selex_allelic_oligos.ref.fa",
+        alt = "data/selex_allelic_oligos.alt.fa",
+        weights = "gkmpredict/{id}.subsample_{num}.{kmer}mer.weights.txt"
+    output:
+        "deltasvm/{id}.subsample_{num}.{kmer}mer.scores.tsv"
+    params:
+        deltasvm = config["software"]["deltasvm"],
+        jobname = "{id}.deltasvm.subsample_{num}.{kmer}mer"
+    log:
+        "log/{id}.subsample_{num}.{kmer}mer.deltasvm.log"
+    shell:
+        """
+        perl {params.deltasvm} {input.ref} {input.alt} {input.weights} {output} &> {log} 
+        """
+
+rule deltasvm_meta:
+    input:
+        "deltasvm/{id}.subsample_{num}.{kmer}mer.scores.tsv"
+    output:
+        out = "deltasvm/{id}.subsample_{num}.{kmer}mer.scores.meta.tsv"
+    run:
+        with open(output.out, "w") as fo:
+            fo.write("snp\tdeltasvm\texp\tnum\tkmer\n")
+            for i in input:
+                id = i.split('/')[-1].split(".")[0]
+                num = i.split('/')[-1].split(".")[1].split("_")[1]
+                kmer = i.split('/')[-1].split(".")[2]
+                with open(i, "r") as fi:
+                    for line in fi:
+                        fo.write("{0}\t{1}\t{2}\t{3}\n".format(line.rstrip(), id, num, kmer))
+
+rule pbs_test:
+    input:
+        pbs = "pbs.score.tsv",
+        deltasvm = "deltasvm/{id}.subsample_{num}.{kmer}mer.scores.meta.tsv"
+    output:
+        "pbs_test/{id}.subsample_{num}.{kmer}mer.auc.tsv",
+        "pbs_test/{id}.subsample_{num}.{kmer}mer.auc_bal.tsv",
+        "pbs_test/{id}.subsample_{num}.{kmer}mer.corr.tsv",
+        "pbs_test/{id}.subsample_{num}.{kmer}mer.curve.pdf",
+        "pbs_test/{id}.subsample_{num}.{kmer}mer.curve_bal.pdf",
+        "pbs_test/{id}.subsample_{num}.{kmer}mer.corr.pdf",
+        "pbs_test/{id}.subsample_{num}.{kmer}mer.roc.tsv",
+        "pbs_test/{id}.subsample_{num}.{kmer}mer.pr.tsv"
+    params:
+        prefix = "pbs_test/{id}.subsample_{num}.{kmer}mer",
+        pbs_test = config["script"]["pbs_test"],
+        jobname = "pbs_test.{id}.subsample_{num}.{kmer}mer"
+    shell:
+        """
+        Rscript {params.pbs_test} {input.pbs} {input.deltasvm} {params.prefix}
+        """
+
+rule pbs_test_by_obs:
+    input:
+        pbs = "pbs.score.tsv",
+        deltasvm = "deltasvm/{id}.subsample_{num}.{kmer}mer.scores.meta.tsv"
+    output:
+        "pbs_test_by_obs/{id}.subsample_{num}.{kmer}mer.auc_by_obs.tsv"
+    params:
+        prefix = "pbs_test_by_obs/{id}.subsample_{num}.{kmer}mer",
+        pbs_test = 'pbs_test_single_by_obs.R',
+        jobname = "pbs_test_by_obs.{id}.subsample_{num}.{kmer}mer"
+    shell:
+        """
+        Rscript {params.pbs_test} {input.pbs} {input.deltasvm} {params.prefix}
+        """
+
+rule merge_auc:
+    input:
+        expand("pbs_test/{id}.subsample_{num}.{kmer}mer.{{auc}}.tsv", id=config["exps"], num=["20000"], kmer=["8", "10"])
+    output:
+        out = "all.{auc}.tsv"
+    run:
+        with open(output.out, "w") as fo:
+            fo.write("exp\tkmer\taupr\tauroc\tcount\tnum\n")
+            for i in input:
+                num = i.split('/')[-1].split(".")[1].split("_")[1]
+                with open(i) as f:
+                    next(f)
+                    for line in f:
+                        tmp = line.rstrip().split("\t")
+                        fo.write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\n".format(tmp[0], tmp[6], tmp[7], tmp[8], tmp[9], num))
+
+rule merge_auc_by_obs:
+    input:
+        expand("pbs_test_by_obs/{id}.{{auc}}.tsv", id=models)
+    output:
+        out = "all.{auc}.tsv"
+    run:
+        with open(output.out, "w") as fo:
+            fo.write("exp\tkmer\tquintile\taupr\tauroc\tcount\tnum\n")
+            for i in input:
+                num = i.split('/')[-1].split(".")[1].split("_")[1]
+                with open(i) as f:
+                    next(f)
+                    for line in f:
+                        tmp = line.rstrip().split("\t")
+                        fo.write("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\n".format(tmp[0], tmp[6], tmp[7], tmp[8], tmp[9], tmp[10], num))
+
+rule pbs_threshold:
+    input:
+        pbs = "pbs.score.tsv",
+        deltasvm = "deltasvm/{id}.subsample_{num}.{kmer}mer.scores.meta.tsv"
+    output:
+        "pbs_threshold/{id}.subsample_{num}.{kmer}mer.threshold.pbsnp_{frac}.tsv"
+    params:
+        pbs_threshold = config["script"]["pbs_threshold"]
+    shell:
+        """
+        Rscript {params.pbs_threshold} {input.pbs} {input.deltasvm} {output} {wildcards.frac}
+        """
