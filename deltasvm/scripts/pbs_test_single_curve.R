@@ -6,9 +6,6 @@ output <- Args[3]
 library(PRROC)
 library(tidyverse)
 
-#pbs_input <- "pbs.score.tsv"
-#deltasvm_input <-  "deltasvm/ALX1_FL_cycle1_Protein6_G12.subsample_20000.10mer.scores.meta.tsv"
-
 pbs <- read_tsv(pbs_input, col_names = c("id", "obs_auc", "obs_pval", "pbs", "pbs_pval", "pbs_fdr"))  %>%
   separate(id, c("tf", "snp"), extra = "drop", fill = "right", sep = ":") 
 deltasvm <- read_tsv(deltasvm_input)  %>%

@@ -6,10 +6,6 @@ pbsnp_ratio <- as.numeric(Args[4]) / 100
 
 library(tidyverse)
 
-#pbs_input <- "pbs.score.tsv"
-#deltasvm_input <- "deltasvm/MYBL2_DBD_cycle4_Protein2_F4.subsample_20000.8mer.scores.meta.tsv"
-#pbsnp_ratio <- 0.5
-
 pbs <- read_tsv(pbs_input, col_names = c("id", "obs_auc", "obs_pval", "pbs", "pbs_pval", "pbs_fdr"))  %>%
   separate(id, c("tf", "snp"), extra = "drop", fill = "right", sep = ":") 
 deltasvm <- read_tsv(deltasvm_input)  %>%
